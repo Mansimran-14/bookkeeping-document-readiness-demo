@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Month-end readiness — sample demo</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #172620;
+      --muted: #66746d;
+      --line: #e4e9e5;
+      --paper: #ffffff;
+      --canvas: #f4f7f3;
+      --green: #176b4d;
+      --green-soft: #e7f4ec;
+      --amber: #a15f11;
+      --amber-soft: #fff3dc;
+      --blue: #3c5b9a;
+      --blue-soft: #edf2fc;
+      --red: #a34c45;
+      --red-soft: #fbeceb;
+      --shadow: 0 18px 50px rgba(29, 52, 41, .08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--canvas);
+      color: var(--ink);
+      font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    .shell { width: min(1180px, calc(100% - 36px)); margin: 30px auto 54px; }
+    .demo-note {
+      display: flex; gap: 10px; align-items: center; justify-content: center;
+      padding: 10px 16px; border: 1px solid #d8e9dd; border-radius: 12px;
+      color: #285d43; background: #edf7ef; font-size: 12px; font-weight: 650;
+      letter-spacing: .01em;
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #44a875; box-shadow: 0 0 0 4px #d8efdf; }
+    header { display: flex; justify-content: space-between; align-items: center; margin: 24px 0 25px; }
+    .brand { display: flex; align-items: center; gap: 12px; font-size: 15px; font-weight: 750; letter-spacing: -.02em; }
+    .brand-mark { display:grid; place-items:center; width:38px; height:38px; border-radius:12px; color:white; background:#1b644a; }
+    .brand-mark svg { width:21px; height:21px; }
+    .workspace { color:var(--muted); font-size:12px; font-weight:550; margin-top:2px; }
+    .header-right { display:flex; gap:10px; align-items:center; }
+    .month { padding:9px 12px; border:1px solid var(--line); border-radius:9px; background:white; color:#3d4a43; font-size:12px; }
+    .avatar { width:34px; height:34px; display:grid; place-items:center; border-radius:50%; color:#315640; background:#dcece1; font-weight:750; font-size:12px; }
+    .intro { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:20px; }
+    h1 { margin:0; font-size:30px; letter-spacing:-.045em; line-height:1.12; }
+    .subhead { margin:8px 0 0; color:var(--muted); font-size:14px; }
+    .demo-action { display:inline-flex; gap:8px; align-items:center; border:0; border-radius:9px; padding:11px 15px; background:var(--green); color:white; text-decoration:none; font-weight:650; font-size:12px; box-shadow:0 5px 12px #176b4d22; }
+    .demo-action:hover { background:#11583e; }
+    .demo-action svg { width:15px; height:15px; }
+    .cards { display:grid; grid-template-columns:repeat(4, 1fr); gap:14px; margin:0 0 18px; }
+    .card { background:var(--paper); border:1px solid var(--line); border-radius:13px; padding:16px 17px; box-shadow:0 4px 15px rgba(29,52,41,.025); }
+    .card-top { display:flex; align-items:center; justify-content:space-between; color:var(--muted); font-size:12px; }
+    .card-icon { display:grid; place-items:center; width:29px; height:29px; border-radius:9px; background:#f0f4f1; color:#567066; }
+    .card-icon svg { width:15px; height:15px; }
+    .card-value { margin-top:11px; font-size:26px; font-weight:740; letter-spacing:-.04em; }
+    .card-caption { margin-top:1px; color:var(--muted); font-size:11px; }
+    .content { display:grid; grid-template-columns:minmax(0, 1fr) 292px; gap:16px; align-items:start; }
+    .panel { background:var(--paper); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow); overflow:hidden; }
+    .panel-head { padding:17px 19px; display:flex; justify-content:space-between; gap:14px; align-items:center; border-bottom:1px solid var(--line); }
+    .panel-title { font-size:14px; font-weight:730; letter-spacing:-.01em; }
+    .panel-subtitle { margin-top:3px; color:var(--muted); font-size:11px; }
+    .controls { display:flex; gap:8px; align-items:center; }
+    .search { width:174px; border:1px solid var(--line); background:#fff; padding:8px 10px; border-radius:8px; font:inherit; font-size:11px; outline:none; }
+    .search:focus { border-color:#80ae93; box-shadow:0 0 0 3px #cce8d5; }
+    .filter { border:1px solid var(--line); background:#fff; padding:8px 9px; border-radius:8px; color:#33423a; font:inherit; font-size:11px; }
+    .table-wrap { overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; min-width:670px; }
+    th { padding:11px 17px; text-align:left; color:#829087; font-size:10px; font-weight:700; letter-spacing:.065em; text-transform:uppercase; background:#fbfcfb; }
+    td { padding:13px 17px; border-top:1px solid #edf0ed; vertical-align:middle; font-size:12px; }
+    tr:hover td { background:#fbfdfb; }
+    .client { display:flex; align-items:center; gap:10px; min-width:140px; }
+    .client-logo { display:grid; place-items:center; width:32px; height:32px; border-radius:10px; color:#436255; background:#edf3ef; font-size:10px; font-weight:750; }
+    .client-name { font-weight:650; white-space:nowrap; }
+    .client-type { margin-top:2px; color:var(--muted); font-size:10px; }
+    .doc-count { white-space:nowrap; color:#3d4a43; }
+    .doc-count strong { font-weight:700; }
+    .doc-count span { color:#89958e; }
+    .due { color:#57645d; white-space:nowrap; }
+    .status { display:inline-flex; align-items:center; gap:6px; white-space:nowrap; border-radius:99px; padding:5px 8px; font-size:10px; font-weight:670; }
+    .status:before { content:""; display:block; width:6px; height:6px; border-radius:50%; background:currentColor; }
+    .ready { color:var(--green); background:var(--green-soft); }
+    .waiting { color:var(--amber); background:var(--amber-soft); }
+    .review { color:var(--blue); background:var(--blue-soft); }
+    .blocked { color:var(--red); background:var(--red-soft); }
+    .row-action { border:0; background:none; padding:5px; color:#738178; cursor:pointer; border-radius:6px; }
+    .row-action:hover { background:#edf3ef; color:var(--green); }
+    .row-action svg { display:block; width:16px; height:16px; }
+    .empty { padding:28px; text-align:center; color:var(--muted); }
+    .side-panel { padding:17px; }
+    .side-title { font-size:13px; font-weight:730; }
+    .side-desc { margin:4px 0 17px; color:var(--muted); font-size:11px; }
+    .progress-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:7px; font-size:11px; }
+    .progress-row strong { font-weight:700; }
+    .progress { height:7px; border-radius:8px; background:#edf1ed; overflow:hidden; }
+    .progress-fill { width:60%; height:100%; border-radius:8px; background:#4a9a70; }
+    .divider { height:1px; background:var(--line); margin:17px 0; }
+    .activity-label { color:#8a958e; font-size:9px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; margin:0 0 12px; }
+    .activity { display:flex; gap:9px; margin:12px 0; }
+    .activity-mark { display:grid; place-items:center; flex:none; width:25px; height:25px; border-radius:50%; background:#eef5f0; color:#367252; }
+    .activity-mark svg { width:12px; height:12px; }
+    .activity-text { color:#526058; font-size:10px; line-height:1.45; }
+    .activity-text b { color:#26372e; font-weight:650; }
+    .activity-time { display:block; color:#96a099; margin-top:2px; font-size:9px; }
+    .callout { margin-top:16px; padding:13px 14px; border-radius:11px; border:1px solid #e5ece6; background:#f8fbf8; }
+    .callout-title { font-size:11px; font-weight:710; }
+    .callout p { margin:5px 0 0; font-size:10px; color:#66746d; line-height:1.5; }
+    .scope { margin-top:16px; padding:12px 14px; border:1px solid var(--line); border-radius:12px; background:rgba(255,255,255,.58); color:#68766d; font-size:10px; text-align:center; }
+    .scope strong { color:#3a4c41; }
+    @media (max-width: 900px) { .content { grid-template-columns:1fr; } .side { display:grid; grid-template-columns:1fr 1fr; gap:14px; } .callout { margin-top:0; align-self:start; } }
+    @media (max-width: 650px) { .shell { width:min(100% - 22px, 1180px); margin-top:12px; } header { margin:17px 0 20px; } .header-right .month { display:none; } .intro { display:block; } .intro .demo-action { margin-top:15px; } h1 { font-size:26px; } .cards { grid-template-columns:repeat(2,1fr); gap:9px; } .card { padding:13px; } .card-value { font-size:23px; } .panel-head { align-items:flex-start; flex-direction:column; } .controls { width:100%; } .search { flex:1; width:auto; } .side { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="demo-note"><span class="dot"></span> SAMPLE DEMO · Every client and activity shown here is fictional</div>
+    <header>
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5 9.2 17 19 7" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 4.5h16v15H4z" stroke="currentColor" stroke-width="1.6" opacity=".7"/></svg></div>
+        <div>Client Close Board<div class="workspace">Workflow preview for a small bookkeeping practice</div></div>
+      </div>
+      <div class="header-right"><div class="month">▦ &nbsp; October 2026 · sample &nbsp;⌄</div><div class="avatar">AM</div></div>
+    </header>
+
+    <section class="intro">
+      <div>
+        <h1>Month-end readiness</h1>
+        <p class="subhead">See what is still missing, what needs review, and which clients are ready to start.</p>
+      </div>
+      <a class="demo-action" href="#pilot" aria-label="View the proposed pilot scope">
+        View the pilot scope
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h11M10 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </section>
+
+    <section class="cards" aria-label="Monthly status summary">
+      <article class="card"><div class="card-top"><span>Client workflows</span><span class="card-icon"><svg viewBox="0 0 20 20" fill="none"><path d="M3 16V7l7-4 7 4v9H3Z" stroke="currentColor" stroke-width="1.5"/><path d="M7 16v-5h6v5" stroke="currentColor" stroke-width="1.5"/></svg></span></div><div class="card-value">10</div><div class="card-caption">in this sample month</div></article>
+      <article class="card"><div class="card-top"><span>Ready to start</span><span class="card-icon" style="color:#237351;background:#e7f4ec"><svg viewBox="0 0 20 20" fill="none"><path d="m4 10 4 4 8-8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div><div class="card-value">4</div><div class="card-caption">all expected items received</div></article>
+      <article class="card"><div class="card-top"><span>Waiting on client</span><span class="card-icon" style="color:#9b601b;background:#fff3dc"><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M10 6v4l2.5 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span></div><div class="card-value">3</div><div class="card-caption">next reminder dates shown below</div></article>
+      <article class="card"><div class="card-top"><span>Needs a quick review</span><span class="card-icon" style="color:#3c5b9a;background:#edf2fc"><svg viewBox="0 0 20 20" fill="none"><path d="M10 3 18 17H2L10 3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 8v4m0 2h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span></div><div class="card-value">2</div><div class="card-caption">before the close can proceed</div></article>
+    </section>
+
+    <section class="content">
+      <div class="panel">
+        <div class="panel-head">
+          <div><div class="panel-title">Client document checklist</div><div class="panel-subtitle">A single view of expected documents and next steps</div></div>
+          <div class="controls">
+            <input class="search" id="search" type="search" placeholder="Search sample clients…" aria-label="Search sample clients">
+            <select class="filter" id="filter" aria-label="Filter by status">
+              <option value="all">All statuses</option><option value="ready">Ready</option><option value="waiting">Waiting</option><option value="review">Needs review</option><option value="blocked">Blocked</option>
+            </select>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Client</th><th>Documents</th><th>Status</th><th>Next step</th><th>Due / follow-up</th><th></th></tr></thead>
+            <tbody id="rows">
+              <tr data-status="ready" data-name="north pine design">
+                <td><div class="client"><span class="client-logo">NP</span><span><span class="client-name">North Pine Design</span><span class="client-type">Professional services</span></span></div></td><td class="doc-count"><strong>4 / 4</strong> <span>received</span></td><td><span class="status ready">Ready</span></td><td>Start reconciliation</td><td class="due">Oct 29</td><td><button class="row-action" aria-label="View North Pine Design workflow"><svg viewBox="0 0 20 20" fill="none"><path d="m7 4 6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button></td>
+              </tr>
+              <tr data-status="waiting" data-name="cedar lane studio">
+                <td><div class="client"><span class="client-logo" style="background:#f4eee6;color:#796347">CL</span><span><span class="client-name">Cedar Lane Studio</span><span class="client-type">Design studio</span></span></div></td><td class="doc-count"><strong>2 / 3</strong> <span>received</span></td><td><span class="status waiting">Waiting on client</span></td><td>Bank statement missing</td><td class="due">Reminder Oct 30</td><td><button class="row-action" aria-label="View Cedar Lane Studio workflow"><svg viewBox="0 0 20 20" fill="none"><path d="m7 4 6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button></td>
+              </tr>
+              <tr data-status="review" data-name="summit trail services">
+                <td><div class="client"><span class="client-logo" style="background:#eaf0f7;color:#48617d">ST</span><span><span class="client-name">Summit Trail Services</span><span class="client-type">Field services</span></span></div></td><td class="doc-count"><strong>3 / 3</strong> <span>received</span></td><td><span class="status review">Needs review</span></td><td>Check duplicate statement</td><td class="due">Review by Oct 29</td><td><button class="row-action" aria-label="View Summit Trail Services workflow"><svg viewBox="0 0 20 20" fill="none"><path d="m7 4 6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button></td>
+              </tr>
+              <tr data-status="ready" data-name="little harbor foods">
+                <td><div class="client"><span class="client-logo" style="background:#f6eded;color:#8c5c59">LH</span><span><span class="client-name">Little Harbor Foods</span><span class="client-type">Food retail</span></span></div></td><td class="doc-count"><strong>5 / 5</strong> <span>received</span></td><td><span class="status ready">Ready</span></td><td>Start reconciliation</td><td class="due">Oct 30</td><td><button class="row-action" aria-label="View Little Harbor Foods workflow"><svg viewBox="0 0 20 20" fill="none"><path d="m7 4 6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button></td>
+              </tr>
+              <tr data-status="blocked" data-name="willow bend consulting">
+                <td><div class="client"><span class="client-logo" style="background:#f0edfa;color:#68578d">WB</span><span><span class="client-name">Willow Bend Consulting</span><span class="client-type">Consulting</span></span></div></td><td class="doc-count"><strong>1 / 4</strong> <span>received</span></td><td><span class="status blocked">Blocked</span></td><td>Payroll report + statements</td><td class="due">Reminder Oct 31</td><td><button class="row-action" aria-label="View Willow Bend Consulting workflow"><svg viewBox="0 0 20 20" fill="none"><path d="m7 4 6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button></td>
+              </tr>
+              <tr data-status="ready" data-name="maple street repair">
+                <td><div class="client"><span class="client-logo" style="background:#e9f1ec;color:#4c705c">MS</span><span><span class="client-name">Maple Street Repair</span><span class="client-type">Repair services</span></span></div></td><td class="doc-count"><strong>3 / 3</strong> <span>received</span></td><td><span class="status ready">Ready</span></td><td>Start reconciliation</td><td class="due">Oct 30</td><td><button class="row-action" aria-label="View Maple Street Repair workflow"><svg viewBox="0 0 20 20" fill="none"><path d="m7 4 6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button></td>
+              </tr>
+              <tr data-status="waiting" data-name="bright field wellness">
+                <td><div class="client"><span class="client-logo" style="background:#f7f0e5;color:#997448">BF</span><span><span class="client-name">Bright Field Wellness</span><span class="client-type">Health and wellness</span></span></div></td><td class="doc-count"><strong>2 / 3</strong> <span>received</span></td><td><span class="status waiting">Waiting on client</span></td><td>Credit-card statement missing</td><td class="due">Reminder Nov 2</td><td><button class="row-action" aria-label="View Bright Field Wellness workflow"><svg viewBox="0 0 20 20" fill="none"><path d="m7 4 6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button></td>
+              </tr>
+              <tr data-status="ready" data-name="riverstone learning">
+                <td><div class="client"><span class="client-logo" style="background:#e8eff4;color:#486779">RL</span><span><span class="client-name">Riverstone Learning</span><span class="client-type">Education</span></span></div></td><td class="doc-count"><strong>4 / 4</strong> <span>received</span></td><td><span class="status ready">Ready</span></td><td>Start reconciliation</td><td class="due">Oct 31</td><td><button class="row-action" aria-label="View Riverstone Learning workflow"><svg viewBox="0 0 20 20" fill="none"><path d="m7 4 6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button></td>
+              </tr>
+              <tr data-status="waiting" data-name="greenline property care">
+                <td><div class="client"><span class="client-logo" style="background:#eaf2e8;color:#527247">GP</span><span><span class="client-name">Greenline Property Care</span><span class="client-type">Property services</span></span></div></td><td class="doc-count"><strong>2 / 4</strong> <span>received</span></td><td><span class="status waiting">Waiting on client</span></td><td>Two statements missing</td><td class="due">Reminder Nov 2</td><td><button class="row-action" aria-label="View Greenline Property Care workflow"><svg viewBox="0 0 20 20" fill="none"><path d="m7 4 6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button></td>
+              </tr>
+              <tr data-status="review" data-name="bluebird creative">
+                <td><div class="client"><span class="client-logo" style="background:#e9eef8;color:#506492">BC</span><span><span class="client-name">Bluebird Creative</span><span class="client-type">Creative services</span></span></div></td><td class="doc-count"><strong>3 / 3</strong> <span>received</span></td><td><span class="status review">Needs review</span></td><td>Confirm one unclear upload</td><td class="due">Review by Oct 30</td><td><button class="row-action" aria-label="View Bluebird Creative workflow"><svg viewBox="0 0 20 20" fill="none"><path d="m7 4 6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button></td>
+              </tr>
+            </tbody>
+          </table>
+          <div id="empty" class="empty" hidden>No sample clients match those filters.</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-top:1px solid #edf0ed;color:#829087;font-size:10px"><span>Showing 10 fictional client workflows</span><span>Updated just now</span></div>
+      </div>
+
+      <aside class="side">
+        <div class="panel side-panel">
+          <div class="side-title">October close progress</div>
+          <div class="side-desc">Fictional example · 10 client workflows</div>
+          <div class="progress-row"><span>Documents accounted for</span><strong>29 / 36</strong></div>
+          <div class="progress"><div class="progress-fill"></div></div>
+          <div class="divider"></div>
+          <div class="activity-label">Recent activity</div>
+          <div class="activity"><span class="activity-mark"><svg viewBox="0 0 16 16" fill="none"><path d="m3 8 3.2 3.2L13 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div class="activity-text"><b>North Pine Design</b> marked ready for bookkeeping<span class="activity-time">Oct 27 · 9:14 AM</span></div></div>
+          <div class="activity"><span class="activity-mark" style="color:#9b601b;background:#fff3dc"><svg viewBox="0 0 16 16" fill="none"><path d="M8 3v5l3 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span><div class="activity-text">Reminder scheduled for <b>Cedar Lane Studio</b><span class="activity-time">Oct 27 · 8:30 AM</span></div></div>
+          <div class="activity"><span class="activity-mark" style="color:#3c5b9a;background:#edf2fc"><svg viewBox="0 0 16 16" fill="none"><path d="M8 2 14 13H2L8 2Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M8 6v3m0 1.5h.01" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span><div class="activity-text"><b>Summit Trail Services</b> needs a quick review<span class="activity-time">Oct 26 · 3:42 PM</span></div></div>
+        </div>
+        <div class="callout"><div class="callout-title">What this preview is for</div><p>One clear place to see what is missing and what is ready. A real setup would use the firm’s existing tools and approved workflow.</p></div>
+      </aside>
+    </section>
+    <div class="scope" id="pilot"><strong>Pilot idea:</strong> configure one monthly checklist for up to 10 clients, a status view, three reminder templates, and a ready/blocked handoff. <strong>Test price: C$149 once.</strong> No bookkeeping, tax work, or document hosting.</div>
+  </main>
+  <script>
+    const search = document.getElementById('search');
+    const filter = document.getElementById('filter');
+    const rows = [...document.querySelectorAll('#rows tr')];
+    const empty = document.getElementById('empty');
+    function applyFilters() {
+      const q = search.value.trim().toLowerCase();
+      const status = filter.value;
+      let visible = 0;
+      for (const row of rows) {
+        const show = (!q || row.dataset.name.includes(q)) && (status === 'all' || row.dataset.status === status);
+        row.hidden = !show;
+        if (show) visible++;
+      }
+      empty.hidden = visible !== 0;
+    }
+    search.addEventListener('input', applyFilters);
+    filter.addEventListener('change', applyFilters);
+  </script>
+</body>
+</html>
